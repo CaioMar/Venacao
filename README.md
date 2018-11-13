@@ -4,6 +4,8 @@ Analise de dados mestrado
 Outdated!!!
 Check MAIN() function and do README update
 
+Code is a mess. Need to split it in multiple c++ files to make it readable.
+
 	Leaf Venation Program Documentation and Manual
 
 1 - Seed (for the pseudo-random number generator);
