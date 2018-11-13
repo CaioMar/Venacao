@@ -1,5 +1,7 @@
 ///////////////////////////////////// leafvenationsim3.cc ///////////////////////////////////////////
 // Program developed to generate open venation patterns and interdigitated patterns //
+//Program developed by Caio Martins Ramos de Oliveira - physics PhD Student at USP//
+//last update: November, 13 2018//
 
 #include "leafvenationsim2.hh"
 #include "mtrand.h"
