@@ -1,7 +1,5 @@
 ///////////////////////////////////// leafvenationsim3.cc ///////////////////////////////////////////
 // Program developed to generate open venation patterns and interdigitated patterns //
-//Program developed by Caio Martins Ramos de Oliveira - physics PhD Student at USP//
-//last update: November, 13 2018//
 
 #include "leafvenationsim2.hh"
 #include "mtrand.h"
@@ -219,9 +217,20 @@ double computeAverageDistTree(){
 		tempdist = computeAverageDistSite(veinpoints2[i]);
 		avdist += tempdist[0];//computeAverageDistSite(veinpoints2[i]);//computes harmonic average distance between this site and its face neighbors in the primary tree
 	//	cout<<"av tot: "<<avdist<<" "<<veinpoints2[i].x<<" "<<veinpoints2[i].y<<endl;
-		output1 << tempdist[0] <<'\t'<< tempdist[1]<< '\t'<< tempdist[2]<<'\t'<<tempdist[3]<<'\t'<<tempdist[4]<<endl;
+		output1 << tempdist[0] <<'\t'<< tempdist[1]<< '\t'<< tempdist[2]<<'\t'<<tempdist[3]<<'\t'<<tempdist[4]<<'\t'<<veinpoints2[i].x<<'\t'<<veinpoints2[i].y<<'\t'<<tempdist[5]<<'\t'<<tempdist[6]<<'\t'<<tempdist[7]<<'\t'<<tempdist[8]<<endl;
 	}
 	avdist = avdist/veinpoints2.size();
+	output1.close();
+
+	output1.open("venconnections");
+	output1 <<"startx"<<'\t'<<"starty"<<'\t'<<"endx"<<'\t'<<"endy"<<'\t'<<"disttoroot"<<
+endl;
+	saveVenationStructure(veinroot,0);
+	output1.close();
+
+	output1.open("ven2connections");
+	output1 <<"startx"<<'\t'<<"starty"<<'\t'<<"endx"<<'\t'<<"endy"<<'\t'<<"disttoroot"<<endl;
+	saveVenationStructure(veinroot2,0);
 	output1.close();
 	return avdist;//returns average distance between trees
 }
@@ -237,6 +246,10 @@ vector<double> computeAverageDistSite(point p){
 	averages.push_back(geomavdist);
 	averages.push_back(double(findvein(p, veinroot2)->order));
 	averages.push_back(0);
+	averages.push_back(0);
+	averages.push_back(0);
+	averages.push_back(0);
+	averages.push_back(0);
 
 	//Adds the point of interest to the veinpoints vector
 	veinpoints.push_back(p);
@@ -251,6 +264,8 @@ vector<double> computeAverageDistSite(point p){
 	//Adds all the face neighbors of the point of interest to the tempsites vector	
 	hedge *temp1(queryface->edge->next), *temp2;
 	tempsites.clear();
+	temp2=queryface->edge->twin;
+	if(temp2->f->site!=pproblem) tempsites.push_back(temp2->f->site);
 	while(temp1!=queryface->edge){
 		temp2=temp1->twin;
 		if(temp2->f->site!=pproblem){
@@ -280,7 +295,7 @@ vector<double> computeAverageDistSite(point p){
 		harmavdist += 1.0/tempdist;
 		arthavdist += tempdist;
 		geomavdist *= tempdist;
-		if(NN < tempdist){
+		if(tempdist < NN){
 			NN = tempdist;
 			NNindx = i;
 		}
@@ -295,7 +310,11 @@ vector<double> computeAverageDistSite(point p){
 	averages[1] = arthavdist;
 	averages[2] = geomavdist;
 	averages[4] = double(findvein(tempsites[NNindx], veinroot)->order);
-	
+	averages[5] = double(tempsites[NNindx].x);
+	averages[6] = double(tempsites[NNindx].y);
+	averages[7] = double(findvein(p, veinroot2)->width);
+	averages[8] = double(findvein(tempsites[NNindx], veinroot)->width);
+
 	return averages;//returns harmonic mean
 }
 
@@ -566,14 +585,26 @@ void defineveinwidth(veinnode *ptr){
 			ptr->width=ptr->width + pow(ptr->next[i]->width,murrayexp);
 		}
 	}
-//	cout<<"width defined before "<<ptr->width<<endl;
 	ptr->width=pow(ptr->width,(1.0/murrayexp));
-//	cout<<"width defined not empty "<<ptr->width<<endl;
 	}else{
 		ptr->width=minwidth;
-//	cout<<"width defined empty "<<ptr->width<<endl;
 	}
 }
+
+void saveVenationStructure(veinnode *ptr, double disttoroot){
+	double tempdist(0);
+	if(!ptr->next.empty()){
+	for(int i=0;i<ptr->next.size();i++){
+		if(ptr->next[i]){
+			tempdist = sqrt(pow(ptr->p.x - ptr->next[i]->p.y,2)+pow(ptr->p.y - ptr->next[i]->p.y,2));
+			tempdist += disttoroot;
+			saveVenationStructure(ptr->next[i], tempdist);
+			output1 << ptr->p.x<<'\t'<<ptr->p.y<<'\t'<<ptr->next[i]->p.x<<'\t'<<ptr->next[i]->p.y<<'\t'<<tempdist<<endl;
+		}
+	}
+	}
+}
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void defineveinorder(veinnode *ptr,int ordem){
 	bool veininter(0),flag(0),flag2(0);

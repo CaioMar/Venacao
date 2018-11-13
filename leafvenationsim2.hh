@@ -168,6 +168,7 @@ void defineveinwidth(veinnode *ptr);
 void deltreebeyondcutoff(veinnode *ptr);
 double computeAverageDistTree();
 vector<double> computeAverageDistSite(point p);
+void saveVenationStructure(veinnode *ptr,double disttoroot);
 
 hedge *cche=0,*che=0; //counterclockwise half-edge and clockwise half-edge
 int facecounter=0;
