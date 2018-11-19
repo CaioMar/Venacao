@@ -3,7 +3,7 @@ LANG="en_US.UTF-8"
 LC_NUMERIC="en_US.UTF-8"
 o='c'
 d='d'
-echo "'model','Ux','Uy','Uz'" >> ../inletFlowRateVectors.csv
+echo "model,Ux,Uy,Uz" >> ../inletFlowRateVectors.csv
 for j in $(seq 1 1 2)
 do
 	for i in $(seq 2 1 10)
@@ -11,7 +11,7 @@ do
 	if [ $i -ne 6 ] 
 	then
 		cd ./model$i/model$i\_$j
-		a=$( echo \'$i$o$j\' )
+		a=$( echo $i$o$j )
 		patchIntegrate -latestTime U inlet | grep 'Integral of U over area' | sed -r "s/(.*)(\()(.*)(\))/\3/" | sed "s/ /,/g" | sed "s/^/$a,/" >> ./../../../inletFlowRateVectors.csv	
 		cd ../../
 	fi
@@ -25,7 +25,7 @@ do
 	if [ $i -ne 6 ] 
 	then
 		cd ./model$i/model$i\_$j
-		a=$( echo \'$i$d$j\' )
+		a=$( echo $i$d$j )
 		#a=$( echo \'$i$x\' | sed "s/_/$d/")
 		patchIntegrate -latestTime U inlet | grep 'Integral of U over area' | sed -r "s/(.*)(\()(.*)(\))/\3/" | sed "s/ /,/g" | sed "s/^/$a,/" >> ./../../../inletFlowRateVectors.csv	
 		cd ../../
