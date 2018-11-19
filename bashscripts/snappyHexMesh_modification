@@ -1,0 +1,17 @@
+#!/bin/bash
+o='_1'
+for i in {2..10}
+do
+	if [ $i -ne 6 ]
+	then
+	mv ./model$i/model$i$o/system/snappyHexMeshDict ./model$i/model$i$o/system/snappyHexMeshDict.org
+	cp snappyHexMeshDict ./model$i/model$i$o/system/
+	b="$(grep -nr 'locationInMesh (' ./model$i/model$i$o/system/snappyHexMeshDict)"
+	a=${b:0:3}
+	futureline="$(grep 'locationInMesh (' ./model$i/model$i$o/system/snappyHexMeshDict.org)"
+	sed -i "${a}s/.*/$futureline/" ./model$i/model$i$o/system/snappyHexMeshDict
+	fi
+#	sed -i 's/3;/6;/g' decomposeParDict
+#	sed -i 's/(3 1 1)/(3 2 1)/g' decomposeParDict
+#	cd ./../../../
+done
