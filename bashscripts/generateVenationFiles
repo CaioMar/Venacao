@@ -1,0 +1,27 @@
+#!/bin/bash
+LANG="en_US.UTF-8"
+LC_NUMERIC="en_US.UTF-8"
+o='c'
+d='d'
+for i in $(seq 2 1 10)
+do
+	if [ $i -ne 6 ] 
+	then
+		a=$( grep "$i$o" allmodelparameters.csv | sed -r 's/^.{3}//' )
+		./leafvenationsim.exe $a
+		mv ./disthistogram ./leafvensim_outputs/disthistogram$i$o 
+		mv ./venconnections ./leafvensim_outputs/venconnections$i$o 
+		mv ./ven2connections ./leafvensim_outputs/ven2connections$i$o 
+	fi
+done
+for i in $(seq 1 1 10)
+do
+	if [ $i -ne 6 ] 
+	then
+		a=$( grep "$i$d" allmodelparameters.csv | sed -r 's/^.{3}//' )
+		./leafvenationsimd.exe $a
+		mv ./disthistogram ./leafvensim_outputs/disthistogram$i$d
+		mv ./venconnections ./leafvensim_outputs/venconnections$i$d 
+		mv ./ven2connections ./leafvensim_outputs/ven2connections$i$d 
+	fi
+done

@@ -1,0 +1,27 @@
+#!/bin/bash
+LANG="en_US.UTF-8"
+LC_NUMERIC="en_US.UTF-8"
+o='c'
+d='d'
+touch allmodelparameters.csv
+cd ./modelcentered
+for i in $(seq 2 1 10)
+do
+	if [ $i -ne 6 ] 
+	then
+		cd ./model$i/tryfinal
+#		cat parameters | sed -r "s/^/$i$o /" | sed -r "s/$/ 1 3 4\n/" >> ./../../../allmodelparameters.csv		
+		./leafvenationsim.exe $u
+		cd ../../
+	fi
+done
+cd ./../modeldiag
+for i in $(seq 1 1 10)
+do
+	if [ $i -ne 6 ] 
+	then
+		cd ./model$i/tryfinal
+		cat parameters | sed -r "s/^/$i$d /" | sed -r "s/$/ 1/" >> ./../../../allmodelparameters.csv		
+		cd ../../
+	fi
+done
